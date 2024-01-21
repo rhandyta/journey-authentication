@@ -34,3 +34,7 @@ func (rUser *InMemoryUserRepository) Get(ctx context.Context, tx *sql.Tx) []mode
 
 	return users
 }
+
+// func (rUser *InMemoryUserRepository) Registration(ctx context.Context, tx *sql.Tx) model.User {
+// 	query := "INSERT INTO users"
+// }

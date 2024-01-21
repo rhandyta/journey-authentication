@@ -40,3 +40,12 @@ func (userService *UserServiceImplementation) Get(c *gin.Context) []model.UserRe
 
 	return responses
 }
+
+// func (userService *UserServiceImplementation) Registration(c *gin.Context) model.UserResponse {
+// 	// userRepo := userService.UserRepository
+// 	// tx, err := userService.db.Begin()
+// 	// if err != nil {
+// 	// 	log.Fatal(err)
+// 	// }
+// 	// user
+// }

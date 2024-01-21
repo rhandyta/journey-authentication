@@ -26,3 +26,6 @@ func (user UserControllerImplementation) Get(c *gin.Context) {
 
 	c.JSON(http.StatusOK, webResponse)
 }
+
+func (user UserControllerImplementation) Registration(c *gin.Context) {
+}
