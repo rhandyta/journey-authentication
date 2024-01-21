@@ -9,9 +9,9 @@ The purpose of this project is to be used in multiple projects.
 ## Features
 This project has the following features:
 
-Registration
-Login
-Forgot Password
+1.Registration
+2.Login
+3.Forgot Password
 
 ## Usage
 To use this project, follow these steps:
