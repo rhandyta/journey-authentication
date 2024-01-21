@@ -1,0 +1,14 @@
+# air.toml
+
+# Set environment variables
+[build]
+cmd = "go"
+args = ["build", "-o", "main"]
+
+# Set main file
+[mains]
+  go = "main.go"
+
+# Auto restart when .go files change
+[log]
+  color = true
