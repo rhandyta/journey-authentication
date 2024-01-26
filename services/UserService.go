@@ -1,51 +1,52 @@
 package services
 
 import (
-	"database/sql"
+	"journey-user/helper"
 	"journey-user/model"
-	"journey-user/repository"
-	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type UserServiceImplementation struct {
-	UserRepository *repository.InMemoryUserRepository
-	db             *sql.DB
+	db *gorm.DB
 }
 
-func NewUserService(db *sql.DB, userRepository *repository.InMemoryUserRepository) *UserServiceImplementation {
-	return &UserServiceImplementation{db: db, UserRepository: userRepository}
+func NewUserService(db *gorm.DB) *UserServiceImplementation {
+	return &UserServiceImplementation{db: db}
 }
 
-func (userService *UserServiceImplementation) Get(c *gin.Context) []model.UserResponse {
+func (userService *UserServiceImplementation) Get(c *gin.Context) []model.User {
+	var users []model.User
 
-	userRepo := userService.UserRepository
-	tx, err := userService.db.Begin()
+	userService.db.Find(&users)
+
+	return users
+}
+
+func (userService *UserServiceImplementation) Registration(c *gin.Context) (model.User, error) {
+	var newUser model.User
+
+	if err := c.BindJSON(&newUser); err != nil {
+		helper.NewAppError("Invalid Request Body", http.StatusBadRequest)
+		c.Set("Error", err)
+		return model.User{}, err
+	}
+
+	password, err := helper.HashPassword(newUser.Password)
 	if err != nil {
-		log.Fatal(err)
+		helper.NewAppError("Invalid Format Password", http.StatusBadRequest)
+		c.Set("Error", err)
+		return model.User{}, err
 	}
 
-	users := userRepo.Get(c.Request.Context(), tx)
-	var responses []model.UserResponse
-	for _, user := range users {
-		responses = append(responses, model.UserResponse{
-			Id:        user.Id,
-			Firstname: user.Firstname,
-			Lastname:  user.Lastname,
-			Age:       user.Age,
-			Email:     user.Email,
-		})
+	newUser.Password = password
+	if err := userService.db.Create(&newUser).Error; err != nil {
+		helper.NewAppError("User Registration Failed", http.StatusInternalServerError)
+		c.Set("Error", err)
+		return model.User{}, err
 	}
 
-	return responses
+	return newUser, nil
 }
-
-// func (userService *UserServiceImplementation) Registration(c *gin.Context) model.UserResponse {
-// 	// userRepo := userService.UserRepository
-// 	// tx, err := userService.db.Begin()
-// 	// if err != nil {
-// 	// 	log.Fatal(err)
-// 	// }
-// 	// user
-// }

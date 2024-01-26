@@ -1,6 +1,10 @@
 package app
 
-import "github.com/spf13/viper"
+import (
+	"fmt"
+
+	"github.com/spf13/viper"
+)
 
 type ConfigDatabase struct {
 	DBPassword string `mapstructure:"DB_PASSWORD"`
@@ -12,10 +16,11 @@ type ConfigDatabase struct {
 
 func SetDbConfiguration() (c ConfigDatabase, err error) {
 	viper.AddConfigPath(".")
-	viper.SetConfigName("../.env")
+	viper.SetConfigName("app")
 	viper.SetConfigType("env")
 	viper.AutomaticEnv()
 	err = viper.ReadInConfig()
+	fmt.Println(err)
 	if err != nil {
 		panic("SETUP CONFIGURATION FAILED")
 	}

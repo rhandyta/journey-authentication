@@ -1,18 +1,31 @@
 package model
 
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
+
 type User struct {
-	Id        int
-	Firstname string
-	Lastname  string
-	Age       int
-	Email     string
-	Password  string
+	Id        uint           `gorm:"primaryKey;autoIncrement" json:"id"`
+	Firstname string         `json:"firstname"`
+	Lastname  string         `json:"lastname"`
+	Age       uint8          `json:"age"`
+	Email     string         `json:"email"`
+	Password  string         `json:"password"`
+	CreatedAt time.Time      `gorm:"<-:create;autoCreateTime"`
+	UpdatedAt time.Time      `gorm:"<-;autoCreateTime;autoUpdateTime"`
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 type UserResponse struct {
-	Id        int    `json:"id"`
-	Firstname string `json:"string"`
-	Lastname  string `json:"string"`
-	Age       int    `json:"int"`
+	Id        uint   `json:"id"`
+	Firstname string `json:"firstName"`
+	Lastname  string `json:"lastName"`
+	Age       uint8  `json:"age"`
 	Email     string `json:"email"`
+}
+
+func (u *User) TableName() string {
+	return "Users"
 }

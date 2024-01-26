@@ -2,6 +2,7 @@ package app
 
 import (
 	"journey-user/controller"
+	"journey-user/helper"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,19 +10,17 @@ import (
 
 func NewRouter(userController *controller.UserControllerImplementation) *gin.Engine {
 
-	r := gin.Default()
-	r.GET("/", func(c *gin.Context) {
+	route := gin.Default()
+	route.GET("/test", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "OK!"})
 	})
 
-	apiGroup := r.Group("/api")
-	user := apiGroup.Group("/user")
-	user.GET("/", userController.Get)
-	user.POST("/registration", userController.Get)
-	// authentication := apiGroup.Group("/auth")
-	// authentication.GET("registration", func(c *gin.Context) {
-	// 	c.JSON(http.StatusOK, gin.H{"message": "API REGIST!"})
-	// })
+	route.Use(helper.HandleErrorFormatter())
 
-	return r
+	apiGroup := route.Group("/api")
+	users := apiGroup.Group("/users")
+	users.GET("/", userController.Get)
+	authentication := apiGroup.Group("/authentication")
+	authentication.POST("/registration", userController.Registration)
+	return route
 }

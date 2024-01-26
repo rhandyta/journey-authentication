@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"journey-user/app"
 	"testing"
 
@@ -9,5 +10,6 @@ import (
 
 func TestNewDb(t *testing.T) {
 	dbSql := app.NewDb()
+	fmt.Println(dbSql)
 	assert.NotNil(t, dbSql)
 }

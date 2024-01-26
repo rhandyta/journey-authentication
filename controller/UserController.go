@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"journey-user/helper"
 	"journey-user/services"
 	"net/http"
 
@@ -18,14 +17,15 @@ func NewUserController(s *services.UserServiceImplementation) *UserControllerImp
 
 func (user UserControllerImplementation) Get(c *gin.Context) {
 	response := user.service.Get(c)
-
-	webResponse := helper.ReturnFormatJson{
-		Message: "Successfully get user",
-		Data:    response,
-	}
-
-	c.JSON(http.StatusOK, webResponse)
+	c.JSON(http.StatusOK, gin.H{"message": "Successfully get user", "users": response})
 }
 
 func (user UserControllerImplementation) Registration(c *gin.Context) {
+
+	response, err := user.service.Registration(c)
+	if err != nil {
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"message": "User created successfully", "user": response})
 }
