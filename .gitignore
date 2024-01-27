@@ -1,1 +1,4 @@
 app.env
+.air.toml
+tmp/main
+tmp/build-errors.log

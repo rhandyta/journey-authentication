@@ -2,7 +2,7 @@ package app
 
 import (
 	"journey-user/controller"
-	"journey-user/helper"
+	handler "journey-user/internal"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -15,7 +15,7 @@ func NewRouter(userController *controller.UserControllerImplementation) *gin.Eng
 		c.JSON(http.StatusOK, gin.H{"message": "OK!"})
 	})
 
-	route.Use(helper.HandleErrorFormatter())
+	route.Use(handler.MiddlewareErrorHandle())
 
 	apiGroup := route.Group("/api")
 	users := apiGroup.Group("/users")
