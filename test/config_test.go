@@ -1,7 +1,6 @@
 package test
 
 import (
-	"fmt"
 	"journey-user/app"
 	"testing"
 
@@ -9,8 +8,7 @@ import (
 )
 
 func TestSetDbConfiguration(t *testing.T) {
-	config, err := app.SetDbConfiguration()
-	fmt.Println(config)
+	config, err := app.SetDbConfiguration(".env")
 	assert.Nil(t, err)
 	assert.Equal(t, "postgres", config.DBUser, "Should Be Equal")
 	assert.Equal(t, "5432", config.DBPort, "PORT Should Be Equal")

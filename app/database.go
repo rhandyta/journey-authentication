@@ -9,9 +9,9 @@ import (
 )
 
 func NewDb() *gorm.DB {
-	config, _ := SetDbConfiguration()
+	config, _ := SetDbConfiguration("app.env")
 
-	dsn := fmt.Sprintf("host=%s user=%s port=%s database=%s sslmode=disable TimeZone=Asia/Shanghai", config.DBHost, config.DBUser, config.DBPort, config.DBName)
+	dsn := fmt.Sprintf("host=%s user=%s port=%s database=%s sslmode=disable TimeZone=Asia/Jakarta", config.DBHost, config.DBUser, config.DBPort, config.DBName)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("Failed to connect to the database!")

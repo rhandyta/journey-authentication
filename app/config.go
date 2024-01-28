@@ -1,8 +1,6 @@
 package app
 
 import (
-	"fmt"
-
 	"github.com/spf13/viper"
 )
 
@@ -14,13 +12,12 @@ type ConfigDatabase struct {
 	DBUser     string `mapstructure:"DB_USER"`
 }
 
-func SetDbConfiguration() (c ConfigDatabase, err error) {
+func SetDbConfiguration(envPath string) (c ConfigDatabase, err error) {
 	viper.AddConfigPath(".")
-	viper.SetConfigName("app")
+	viper.SetConfigName(envPath)
 	viper.SetConfigType("env")
 	viper.AutomaticEnv()
 	err = viper.ReadInConfig()
-	fmt.Println(err)
 	if err != nil {
 		panic("SETUP CONFIGURATION FAILED")
 	}
