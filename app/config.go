@@ -17,10 +17,14 @@ func SetDbConfiguration(envPath string) (c ConfigDatabase, err error) {
 	viper.SetConfigName(envPath)
 	viper.SetConfigType("env")
 	viper.AutomaticEnv()
-	err = viper.ReadInConfig()
-	if err != nil {
-		panic("SETUP CONFIGURATION FAILED")
+	if err := viper.ReadInConfig(); err != nil {
+		// Handle error, e.g., return an error instead of panicking
+		return ConfigDatabase{}, err
 	}
-	err = viper.Unmarshal(&c)
-	return
+
+	if err := viper.Unmarshal(&c); err != nil {
+		// Handle error, e.g., return an error instead of panicking
+		return ConfigDatabase{}, err
+	}
+	return c, nil
 }
