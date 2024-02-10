@@ -13,7 +13,6 @@ func RequestValidationHelper(paramStruct interface{}) string {
 	if err != nil {
 		for _, e := range err.(validator.ValidationErrors) {
 			return ValidationErrorToText(e)
-			break
 		}
 	}
 
