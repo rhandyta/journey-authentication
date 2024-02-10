@@ -17,12 +17,11 @@ type AppError struct {
 // middleware
 func MiddlewareErrorHandle() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// defer func() {
-		// 	if r := recover(); r != nil {
-		// 		GlobalInternalServerError(c)
-		// 	}
-
-		// }()
+		defer func() {
+			if r := recover(); r != nil {
+				GlobalInternalServerError(c)
+			}
+		}()
 
 		c.Next()
 
