@@ -1,19 +1,20 @@
 package model
 
+import "github.com/golang-jwt/jwt/v5"
+
 type AuthUser struct {
-	User  *User
+	User  User
 	Token string
 }
 
 type Login struct {
-	Identifier string `json:"email" binding:"required`
-	Password   string `json:"password" binding:"required`
+	Email    string `json:"email" validate:"required_if=Username '' "`
+	Username string `json:"username" validate:"required_if=Email '' "`
+	Password string `json:"password" validate:"required"`
 }
 
-type Registration struct {
-	Firstname string `json:"firstname" Form:"firstname" binding:"required"`
-	Lastname  string `json:"lastname" binding:"required"`
-	Age       uint8  `json:"age" binding:"required"`
-	Email     string `json:"email" binding:"required"`
-	Password  string `json:"password" binding:"required"`
+type AuthUserClaim struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	jwt.RegisteredClaims
 }

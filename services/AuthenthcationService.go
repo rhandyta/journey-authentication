@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"journey-user/helper"
 	"journey-user/model"
 	"time"
@@ -36,11 +37,11 @@ func (userService *UserServiceImpl) Login(request model.Login) (model.AuthUser, 
 	var authUser model.AuthUser
 	var user model.User
 
-	userSaved := userService.db.Where("email = ? ", request.Identifier).
-		Or("username = ? ", request.Identifier).
+	userService.db.Where("username = ?", request.Username).
+		Or("email = ? ", request.Email).
 		First(&user)
 
-	if userSaved == nil {
+	if user.Username == "" {
 		return authUser, nil
 	}
 
@@ -49,24 +50,28 @@ func (userService *UserServiceImpl) Login(request model.Login) (model.AuthUser, 
 		return authUser, err
 	}
 
-	tokenString, err := createToken(request.Identifier)
+	tokenString, err := createToken(user)
 	if err != nil {
 		return authUser, nil
 	}
-	authUser.User = &user
+	authUser.User = user
 	authUser.Token = tokenString
 	return authUser, nil
 }
 
-func createToken(Identifier string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodES256,
-		jwt.MapClaims{
-			"identifier": Identifier,
-			"expired_at": time.Now().Add(time.Hour * 24).Unix(),
-		})
+func createToken(user model.User) (string, error) {
+	claims := model.AuthUserClaim{
+		user.Username,
+		user.Email,
+		jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+		},
+	}
 
-	tokenString, err := token.SignedString("jwt-auth")
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte("secred-key"))
 	if err != nil {
+		fmt.Println(err)
 		return "", err
 	}
 

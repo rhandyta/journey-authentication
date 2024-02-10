@@ -22,7 +22,7 @@ func NewRouter(userController *controller.UserControllerImpl, authController *co
 	authentication := apiGroup.Group("/authentication")
 
 	authentication.POST("/registration", authController.Registration)
-	authentication.POST("/login", authController.Registration)
+	authentication.POST("/login", authController.Login)
 
 	users.GET("/", userController.Get)
 	return route

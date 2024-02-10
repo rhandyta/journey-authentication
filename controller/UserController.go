@@ -14,6 +14,7 @@ type UserControllerImpl struct {
 
 func NewUserController(db *gorm.DB) *UserControllerImpl {
 	service := services.NewUserService(db)
+
 	return &UserControllerImpl{service: service}
 }
 
