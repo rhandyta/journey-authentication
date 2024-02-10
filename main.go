@@ -3,15 +3,13 @@ package main
 import (
 	"journey-user/app"
 	"journey-user/controller"
-	"journey-user/services"
 )
 
 func main() {
 	db := app.NewDb()
-	userService := services.NewUserService(db)
-	userController := controller.NewUserController(userService)
-
-	router := app.NewRouter(userController)
+	userController := controller.NewUserController(db)
+	authController := controller.NewAuthenticationController(db)
+	router := app.NewRouter(userController, authController)
 
 	router.Run(":8000")
 }

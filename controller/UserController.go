@@ -5,27 +5,19 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
-type UserControllerImplementation struct {
-	service *services.UserServiceImplementation
+type UserControllerImpl struct {
+	service *services.UserServiceImpl
 }
 
-func NewUserController(s *services.UserServiceImplementation) *UserControllerImplementation {
-	return &UserControllerImplementation{service: s}
+func NewUserController(db *gorm.DB) *UserControllerImpl {
+	service := services.NewUserService(db)
+	return &UserControllerImpl{service: service}
 }
 
-func (user UserControllerImplementation) Get(c *gin.Context) {
+func (user UserControllerImpl) Get(c *gin.Context) {
 	response := user.service.Get(c)
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully get user", "users": response})
-}
-
-func (user UserControllerImplementation) Registration(c *gin.Context) {
-
-	response, err := user.service.Registration(c)
-	if err != nil {
-		return
-	}
-
-	c.JSON(http.StatusCreated, gin.H{"message": "User created successfully", "user": response})
 }

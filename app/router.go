@@ -2,25 +2,29 @@ package app
 
 import (
 	"journey-user/controller"
-	handler "journey-user/internal"
+	journey_middleware "journey-user/internal"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func NewRouter(userController *controller.UserControllerImplementation) *gin.Engine {
+func NewRouter(userController *controller.UserControllerImpl, authController *controller.AuthenticationControllerImpl) *gin.Engine {
 
 	route := gin.Default()
 	route.GET("/test", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "OK!"})
 	})
 
-	route.Use(handler.MiddlewareErrorHandle())
+	route.Use(journey_middleware.MiddlewareErrorHandle())
 
 	apiGroup := route.Group("/api")
 	users := apiGroup.Group("/users")
-	users.GET("/", userController.Get)
 	authentication := apiGroup.Group("/authentication")
-	authentication.POST("/registration", userController.Registration)
+
+	authentication.POST("/registration", authController.Registration)
+	authentication.POST("/login", authController.Registration)
+
+	users.GET("/", userController.Get)
 	return route
+
 }

@@ -1,11 +1,13 @@
-package handler
+package journey_middleware
 
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 type AppError struct {
@@ -22,32 +24,32 @@ func MiddlewareErrorHandle() gin.HandlerFunc {
 			}
 
 		}()
+
 		c.Next()
 
 		if len(c.Errors) > 0 {
-			for _, e := range c.Errors {
-				switch e.Type {
-				case gin.ErrorTypePublic:
-					if !c.Writer.Written() {
-						c.JSON(c.Writer.Status(), gin.H{"message": e.Error()})
-					}
-					break
-				case gin.ErrorTypeBind:
-					if errs, ok := e.Err.(validator.ValidationErrors); ok {
-						status := c.Writer.Status()
-						if c.Writer.Status() != http.StatusOK {
-							status = c.Writer.Status()
-						}
-						if len(errs) > 0 {
-							c.JSON(status, gin.H{"message": ValidationErrorToText(errs[0])})
-						}
-					} else {
-						GlobalInternalServerError(c)
-					}
-					break
-				default:
-					GlobalInternalServerError(c)
+			e := c.Errors[0]
+			// gorm validation unique
+			if gormErr, ok := e.Err.(*pgconn.PgError); ok {
+				// unique code sql
+				if gormErr.Code == "23505" {
+					messageReplace := strings.ReplaceAll(gormErr.ConstraintName, fmt.Sprintf("idx_%s_", gormErr.TableName), "")
+					c.JSON(http.StatusConflict, gin.H{"message": fmt.Sprintf("Sorry, %s already registered!", messageReplace)})
+					return
 				}
+			}
+
+			// gin validation error
+			if errs, ok := e.Err.(validator.ValidationErrors); ok {
+				status := c.Writer.Status()
+				if c.Writer.Status() != http.StatusOK {
+					status = c.Writer.Status()
+				}
+				if len(errs) > 0 {
+					c.JSON(status, gin.H{"message": ValidationErrorToText(errs[0])})
+				}
+			} else {
+				GlobalInternalServerError(c)
 			}
 		}
 	}
