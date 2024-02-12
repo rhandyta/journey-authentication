@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	models "journey-user/pkg/models"
+	"journey-user/pkg/models"
 
 	"gorm.io/gorm"
 )

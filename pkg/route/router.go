@@ -20,5 +20,3 @@ func SetupRouter(userController *controllers.UserController) *gin.Engine {
 
 	return router
 }
-
-//

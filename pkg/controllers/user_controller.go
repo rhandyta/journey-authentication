@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	models "journey-user/pkg/models"
+	"journey-user/pkg/models"
 	"journey-user/pkg/services"
 	"net/http"
 	"strconv"

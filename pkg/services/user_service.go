@@ -3,7 +3,7 @@ package services
 import (
 	"errors"
 	"journey-user/helper"
-	models "journey-user/pkg/models"
+	"journey-user/pkg/models"
 	"journey-user/pkg/repositories"
 )
 
