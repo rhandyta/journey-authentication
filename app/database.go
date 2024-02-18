@@ -2,7 +2,7 @@ package app
 
 import (
 	"fmt"
-	"journey-user/pkg/models"
+	"journey-user/model"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -16,6 +16,6 @@ func NewDb() *gorm.DB {
 	if err != nil {
 		panic("Failed to connect to the database!")
 	}
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&model.User{})
 	return db
 }
